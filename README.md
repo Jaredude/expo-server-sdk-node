@@ -100,16 +100,19 @@ let receiptIdChunks = expo.chunkPushNotificationReceiptIds(receiptIds);
 
       // The receipts specify whether Apple or Google successfully received the
       // notification and information about an error, if one occurred.
-      for (let receipt of receipts) {
-        if (receipt.status === 'ok') {
+      for (const receiptId in receipts) {
+        const { status, message, details } = receipts[receiptId];
+        if (status === "ok") {
           continue;
-        } else if (receipt.status === 'error') {
-          console.error(`There was an error sending a notification: ${receipt.message}`);
-          if (receipt.details && receipt.details.error) {
+        } else if (status === "error") {
+          console.error(
+            `There was an error sending a notification: ${message}`
+          );
+          if (details && details.error) {
             // The error codes are listed in the Expo documentation:
-            // https://docs.expo.io/versions/latest/guides/push-notifications#response-format
+            // https://docs.expo.io/versions/latest/guides/push-notifications/#individual-errors
             // You must handle the errors appropriately.
-            console.error(`The error code is ${receipt.details.error}`);
+            console.error(`The error code is ${details.error}`);
           }
         }
       }
